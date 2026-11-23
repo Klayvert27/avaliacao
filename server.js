@@ -5,13 +5,12 @@ import { createClient } from '@supabase/supabase-js';
 const app = express();
 app.use(express.json());
 
-// Conexão direta com o Supabase usando as suas credenciais
+// Usa as variáveis configuradas no Render
 const supabase = createClient(
-  "https://lsbgcakeyrlbnxbaeheu.supabase.co",
-  "sb_secret_hyIKMKkUeKLmGICZtMgVlw_-zIzKFU3"
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_KEY
 );
 
-// Rota principal: entrega a prancheta de avaliação direto no navegador
 app.get('/', (req, res) => {
   res.send(`
     <!DOCTYPE html>
@@ -23,8 +22,10 @@ app.get('/', (req, res) => {
         <style>
             body { font-family: Arial, sans-serif; background: #f4f7f6; margin: 0; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
             .card { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 100%; max-width: 450px; }
-            h2 { text-align: center; color: #333; margin-bottom: 25px; }
+            h2 { text-align: center; color: #333; margin-bottom: 10px; }
+            .badge { text-align: center; background: #e9f2ff; color: #0056b3; padding: 8px 12px; border-radius: 6px; font-weight: bold; margin-bottom: 20px; font-size: 14px; }
             label { font-weight: bold; color: #555; display: block; margin-bottom: 8px; }
+            select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; margin-bottom: 20px; font-size: 15px; background: white; }
             .estrelas { display: flex; justify-content: space-between; margin-bottom: 20px; }
             .estrelas input { display: none; }
             .estrelas label { flex: 1; text-align: center; padding: 12px 0; margin: 0 4px; background: #eee; border-radius: 6px; cursor: pointer; font-size: 18px; font-weight: bold; color: #444; transition: 0.2s; }
@@ -38,7 +39,18 @@ app.get('/', (req, res) => {
     <body>
         <div class="card">
             <h2>Avaliação da Feira Acadêmica</h2>
+            <div id="infoPalestra" class="badge" style="display:none;"></div>
             <form id="formAvaliacao">
+                <div id="seletorContainer">
+                    <label for="palestraSelect">Apresentação / Palestra:</label>
+                    <select id="palestraSelect" required>
+                        <option value="Apresentação 1">Apresentação 1</option>
+                        <option value="Apresentação 2">Apresentação 2</option>
+                        <option value="Apresentação 3">Apresentação 3</option>
+                        <option value="Apresentação 4">Apresentação 4</option>
+                    </select>
+                </div>
+
                 <label>Nota (1 a 5):</label>
                 <div class="estrelas">
                     <input type="radio" id="n1" name="calificacion" value="1" required><label for="n1">1</label>
@@ -57,8 +69,21 @@ app.get('/', (req, res) => {
         </div>
 
         <script>
+            const params = new URLSearchParams(window.location.search);
+            const palestraUrl = params.get('palestra');
+            const infoDiv = document.getElementById('infoPalestra');
+            const seletorContainer = document.getElementById('seletorContainer');
+            const palestraSelect = document.getElementById('palestraSelect');
+
+            if (palestraUrl) {
+                infoDiv.style.display = 'block';
+                infoDiv.innerText = 'Avaliando: ' + palestraUrl;
+                seletorContainer.style.display = 'none';
+            }
+
             document.getElementById('formAvaliacao').addEventListener('submit', async (e) => {
                 e.preventDefault();
+                const palestra = palestraUrl || palestraSelect.value;
                 const calificacion = document.querySelector('input[name="calificacion"]:checked').value;
                 const sugerencia = document.getElementById('sugerencia').value;
                 const msgDiv = document.getElementById('msg');
@@ -67,7 +92,7 @@ app.get('/', (req, res) => {
                     const res = await fetch('/api/respuestas', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ calificacion: Number(calificacion), sugerencia })
+                        body: JSON.stringify({ palestra, calificacion: Number(calificacion), sugerencia })
                     });
 
                     if (res.ok) {
@@ -89,8 +114,8 @@ app.get('/', (req, res) => {
   `);
 });
 
-// Salvar a resposta no Supabase
 app.post('/api/respuestas', async (req, res) => {
+  const palestra = (req.body.palestra || 'Geral').trim().slice(0, 150);
   const calificacion = Number(req.body.calificacion);
   const sugerencia = (req.body.sugerencia || '').trim().slice(0, 1000);
 
@@ -100,16 +125,15 @@ app.post('/api/respuestas', async (req, res) => {
 
   const { error } = await supabase
     .from('respuestas')
-    .insert({ calificacion, sugerencia });
+    .insert({ palestra, calificacion, sugerencia });
 
   if (error) {
-    console.error(error);
+    console.error('Erro Supabase:', error);
     return res.status(500).json({ error: 'No se pudo guardar' });
   }
   res.status(201).json({ ok: true });
 });
 
-// Ver resultados (protegido com a senha do painel)
 app.get('/api/resultados', async (req, res) => {
   if (req.headers['x-password'] !== process.env.PANEL_PASSWORD) {
     return res.status(401).json({ error: 'No autorizado' });
@@ -117,7 +141,7 @@ app.get('/api/resultados', async (req, res) => {
 
   const { data, error } = await supabase
     .from('respuestas')
-    .select('calificacion, sugerencia, creado_en')
+    .select('palestra, calificacion, sugerencia, creado_en')
     .order('creado_en', { ascending: false });
 
   if (error) return res.status(500).json({ error: 'Error al leer' });
@@ -130,8 +154,9 @@ app.get('/api/resultados', async (req, res) => {
   res.json({
     total,
     promedio: Number(promedio.toFixed(2)),
-    comentarios: data.filter(r => r.sugerencia).map(r => r.sugerencia)
+    respostas: data
   });
 });
 
-app.listen(3000, () => console.log('Servidor rodando perfeitamente em http://localhost:3000'));
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log('Servidor rodando na porta ' + PORT));
