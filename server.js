@@ -18,15 +18,17 @@ app.get('/', (req, res) => {
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Avaliação - Feira Acadêmica</title>
+        <title>Avaliação - 9º CAIC</title>
         <style>
             body { font-family: Arial, sans-serif; background: #f4f7f6; margin: 0; padding: 20px; display: flex; justify-content: center; }
-            .container { width: 100%; max-width: 520px; }
+            .container { width: 100%; max-width: 540px; }
             .header-card { background: #0056b3; color: white; padding: 22px; border-radius: 12px; text-align: center; margin-bottom: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.12); }
-            .header-card h1 { margin: 0 0 8px 0; font-size: 22px; }
-            .data-badge { display: inline-block; background: rgba(255,255,255,0.2); padding: 6px 14px; border-radius: 20px; font-weight: bold; font-size: 15px; }
+            .header-card h1 { margin: 0 0 6px 0; font-size: 21px; }
+            .header-card p { margin: 0 0 12px 0; font-size: 13px; opacity: 0.9; }
+            .data-badge { display: inline-block; background: rgba(255,255,255,0.2); padding: 6px 14px; border-radius: 20px; font-weight: bold; font-size: 14px; }
             .card { background: white; padding: 22px; border-radius: 12px; box-shadow: 0 3px 10px rgba(0,0,0,0.08); margin-bottom: 18px; }
-            .card h3 { margin: 0 0 14px 0; color: #222; border-bottom: 2px solid #f0f0f0; padding-bottom: 8px; }
+            .card h3 { margin: 0 0 6px 0; color: #222; font-size: 17px; }
+            .horario { display: inline-block; background: #e9f2ff; color: #0056b3; font-size: 12px; font-weight: bold; padding: 3px 8px; border-radius: 4px; margin-bottom: 14px; }
             label { font-weight: bold; color: #555; display: block; margin-bottom: 8px; font-size: 14px; }
             .estrelas { display: flex; justify-content: space-between; margin-bottom: 16px; }
             .estrelas input { display: none; }
@@ -42,39 +44,92 @@ app.get('/', (req, res) => {
     <body>
         <div class="container">
             <div class="header-card">
-                <h1>Avaliação da Feira Acadêmica</h1>
+                <h1>9º Congresso Amazônico de Iniciação Científica</h1>
+                <p>Avaliação das Apresentações e Atividades</p>
                 <div id="tituloDia" class="data-badge"></div>
             </div>
             <div id="listaApresentacoes"></div>
         </div>
 
         <script>
-            const DIAS_SEMANA = {
-                '1': { label: 'Dia 1 — Segunda-feira, 23/11/2026', curto: 'Segunda (23/11)' },
-                '2': { label: 'Dia 2 — Terça-feira, 24/11/2026', curto: 'Terça (24/11)' },
-                '3': { label: 'Dia 3 — Quarta-feira, 25/11/2026', curto: 'Quarta (25/11)' },
-                '4': { label: 'Dia 4 — Quinta-feira, 26/11/2026', curto: 'Quinta (26/11)' },
-                '5': { label: 'Dia 5 — Sexta-feira, 27/11/2026', curto: 'Sexta (27/11)' }
+            const PROGRAMACAO = {
+                '1': {
+                    label: 'Segunda-feira, 23/11/2026',
+                    curto: 'Seg 23/11',
+                    itens: [
+                        { hora: '14h', titulo: 'Conferência: Advocacia do Futuro' },
+                        { hora: '14h', titulo: 'Workshop: Lawtechs, Legal Design e Futuro Jurídico' },
+                        { hora: '19h', titulo: 'Solenidade de Abertura e Conferência Magna' }
+                    ]
+                },
+                '2': {
+                    label: 'Terça-feira, 24/11/2026',
+                    curto: 'Ter 24/11',
+                    itens: [
+                        { hora: '14h', titulo: 'Painel: Justiça Socioambiental e Povos da Amazônia' },
+                        { hora: '19h', titulo: 'Tecnologia e Sustentabilidade nos Negócios Amazônicos' },
+                        { hora: '19h', titulo: 'Direitos Humanos, Regulação Tecnológica e Cooperação' },
+                        { hora: '19h', titulo: 'Saúde Mental, Comportamento e Qualidade de Vida' },
+                        { hora: '19h', titulo: 'Assessorias Esportivas para Corridas de Rua' },
+                        { hora: '19h', titulo: 'Sessão 1: Pôsteres e Comunicações Orais' }
+                    ]
+                },
+                '3': {
+                    label: 'Quarta-feira, 25/11/2026',
+                    curto: 'Qua 25/11',
+                    itens: [
+                        { hora: '14h', titulo: 'Cine Juris' },
+                        { hora: '14h', titulo: 'Competição de Direitos Humanos' },
+                        { hora: '19h', titulo: 'Conferência: Propriedade Intelectual e Sociobiodiversidade' },
+                        { hora: '19h', titulo: 'Cine Fórum: Amazônia em Cena' },
+                        { hora: '19h', titulo: 'Educação, Corpo e Mente' },
+                        { hora: '19h', titulo: 'Ergonomia e Atividade Física' },
+                        { hora: '19h', titulo: 'Sessão 2: Pôsteres, Comunicações e Mostra de Extensão' }
+                    ]
+                },
+                '4': {
+                    label: 'Quinta-feira, 26/11/2026',
+                    curto: 'Qui 26/11',
+                    itens: [
+                        { hora: '14h / 19h', titulo: 'Júri Simulado / NUJUR' },
+                        { hora: '19h', titulo: 'Competição de Direitos Humanos: UNINORTE x UNILASALLE' },
+                        { hora: '19h', titulo: 'Oficina 1: IA para Pesquisa Acadêmica e Análise de Dados' },
+                        { hora: '19h', titulo: 'Oficina 2: Avaliação Funcional e Tecnologia Vestível' },
+                        { hora: '19h', titulo: 'Oficina 3: Primeiros Socorros Emocionais e Escuta Ativa' },
+                        { hora: '19h', titulo: 'Oficina 4: Simulação de Negociação Internacional (ONU)' },
+                        { hora: '19h', titulo: 'Oficina 5: Hackathon Relâmpago de IA para a Amazônia' },
+                        { hora: '19h', titulo: '40ª Mostra de Iniciação Científica — Sessão 3' }
+                    ]
+                },
+                '5': {
+                    label: 'Sexta-feira, 27/11/2026',
+                    curto: 'Sex 27/11',
+                    itens: [
+                        { hora: '14h', titulo: 'Apresentação das Extensões (Resultados)' }
+                    ]
+                }
             };
 
             const params = new URLSearchParams(window.location.search);
             let diaParam = params.get('dia');
 
-            if (!DIAS_SEMANA[diaParam]) {
+            if (!PROGRAMACAO[diaParam]) {
                 const hoje = new Date().getDay();
-                diaParam = (hoje >= 1 && hoje <= 5) ? String(hoje) : '1';
+                diaParam = (hoje >= 1 && hoje <= 5) ? String(hoje) : '2';
             }
 
-            const diaAtual = DIAS_SEMANA[diaParam];
+            const diaAtual = PROGRAMACAO[diaParam];
             document.getElementById('tituloDia').innerText = diaAtual.label;
 
             const container = document.getElementById('listaApresentacoes');
 
-            for (let i = 1; i <= 4; i++) {
+            diaAtual.itens.forEach((item, idx) => {
+                const i = idx + 1;
                 const card = document.createElement('div');
                 card.className = 'card';
                 card.innerHTML = \`
-                    <h3>Apresentação \${i}</h3>
+                    <h3>\${item.titulo}</h3>
+                    <span class="horario">Horário: \${item.hora}</span>
                     <form id="form-\${i}">
                         <label>Nota (1 a 5):</label>
                         <div class="estrelas">
@@ -85,8 +140,8 @@ app.get('/', (req, res) => {
                             <input type="radio" id="n\${i}-5" name="nota-\${i}" value="5"><label for="n\${i}-5">5</label>
                         </div>
                         <label for="sug-\${i}">Sugestões ou Comentários:</label>
-                        <textarea id="sug-\${i}" placeholder="Comentário opcional sobre a Apresentação \${i}..."></textarea>
-                        <button type="submit" id="btn-\${i}">Enviar Avaliação — Apresentação \${i}</button>
+                        <textarea id="sug-\${i}" placeholder="Comentário opcional..."></textarea>
+                        <button type="submit" id="btn-\${i}">Enviar Avaliação</button>
                     </form>
                     <div id="msg-\${i}" class="msg"></div>
                 \`;
@@ -103,7 +158,7 @@ app.get('/', (req, res) => {
                     btn.disabled = true;
                     btn.innerText = 'Enviando...';
 
-                    const palestra = \`\${diaAtual.curto} - Apresentação \${i}\`;
+                    const palestra = \`\${diaAtual.curto} - \${item.titulo}\`;
                     const calificacion = Number(notaSelecionada.value);
                     const sugerencia = document.getElementById(\`sug-\${i}\`).value;
 
@@ -122,16 +177,16 @@ app.get('/', (req, res) => {
                             msgDiv.style.color = 'red';
                             msgDiv.innerText = 'Erro ao enviar. Tente novamente.';
                             btn.disabled = false;
-                            btn.innerText = \`Enviar Avaliação — Apresentação \${i}\`;
+                            btn.innerText = 'Enviar Avaliação';
                         }
                     } catch (err) {
                         msgDiv.style.color = 'red';
                         msgDiv.innerText = 'Erro de conexão com o servidor.';
                         btn.disabled = false;
-                        btn.innerText = \`Enviar Avaliação — Apresentação \${i}\`;
+                        btn.innerText = 'Enviar Avaliação';
                     }
                 });
-            }
+            });
         </script>
     </body>
     </html>
