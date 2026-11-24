@@ -1,15 +1,15 @@
 import 'dotenv/config';
 import express from 'express';
-import { createClient } from '@supabase/supabase-js';
+import pg from 'pg';
 
+const { Pool } = pg;
 const app = express();
 app.use(express.json());
 
-// Usa as variáveis configuradas no Render
-const supabase = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_KEY
-);
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: { rejectUnauthorized: false }
+});
 
 app.get('/', (req, res) => {
   res.send(`
@@ -105,58 +105,4 @@ app.get('/', (req, res) => {
                     }
                 } catch (err) {
                     msgDiv.style.color = 'red';
-                    msgDiv.innerText = 'Erro de conexão com o servidor.';
-                }
-            });
-        </script>
-    </body>
-    </html>
-  `);
-});
-
-app.post('/api/respuestas', async (req, res) => {
-  const palestra = (req.body.palestra || 'Geral').trim().slice(0, 150);
-  const calificacion = Number(req.body.calificacion);
-  const sugerencia = (req.body.sugerencia || '').trim().slice(0, 1000);
-
-  if (!Number.isInteger(calificacion) || calificacion < 1 || calificacion > 5) {
-    return res.status(400).json({ error: 'Calificación inválida' });
-  }
-
-  const { error } = await supabase
-    .from('respuestas')
-    .insert({ palestra, calificacion, sugerencia });
-
-  if (error) {
-    console.error('Erro Supabase:', error);
-    return res.status(500).json({ error: 'No se pudo guardar' });
-  }
-  res.status(201).json({ ok: true });
-});
-
-app.get('/api/resultados', async (req, res) => {
-  if (req.headers['x-password'] !== process.env.PANEL_PASSWORD) {
-    return res.status(401).json({ error: 'No autorizado' });
-  }
-
-  const { data, error } = await supabase
-    .from('respuestas')
-    .select('palestra, calificacion, sugerencia, creado_en')
-    .order('creado_en', { ascending: false });
-
-  if (error) return res.status(500).json({ error: 'Error al leer' });
-
-  const total = data.length;
-  const promedio = total
-    ? data.reduce((s, r) => s + r.calificacion, 0) / total
-    : 0;
-
-  res.json({
-    total,
-    promedio: Number(promedio.toFixed(2)),
-    respostas: data
-  });
-});
-
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log('Servidor rodando na porta ' + PORT));
+                    msgDiv.inner
