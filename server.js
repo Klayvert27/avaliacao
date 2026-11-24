@@ -105,4 +105,60 @@ app.get('/', (req, res) => {
                     }
                 } catch (err) {
                     msgDiv.style.color = 'red';
-                    msgDiv.inner
+                    msgDiv.innerText = 'Erro de conexão com o servidor.';
+                }
+            });
+        </script>
+    </body>
+    </html>
+  `);
+});
+
+app.post('/api/respuestas', async (req, res) => {
+  const palestra = (req.body.palestra || 'Geral').trim().slice(0, 150);
+  const calificacion = Number(req.body.calificacion);
+  const sugerencia = (req.body.sugerencia || '').trim().slice(0, 1000);
+
+  if (!Number.isInteger(calificacion) || calificacion < 1 || calificacion > 5) {
+    return res.status(400).json({ error: 'Calificación inválida' });
+  }
+
+  try {
+    await pool.query(
+      'INSERT INTO respuestas (palestra, calificacion, sugerencia) VALUES ($1, $2, $3)',
+      [palestra, calificacion, sugerencia]
+    );
+    res.status(201).json({ ok: true });
+  } catch (err) {
+    console.error('Erro Postgres:', err);
+    res.status(500).json({ error: 'No se pudo guardar' });
+  }
+});
+
+app.get('/api/resultados', async (req, res) => {
+  if (req.headers['x-password'] !== process.env.PANEL_PASSWORD) {
+    return res.status(401).json({ error: 'No autorizado' });
+  }
+
+  try {
+    const { rows } = await pool.query(
+      'SELECT palestra, calificacion, sugerencia, creado_en FROM respuestas ORDER BY creado_en DESC'
+    );
+    const total = rows.length;
+    const promedio = total
+      ? rows.reduce((s, r) => s + Number(r.calificacion), 0) / total
+      : 0;
+
+    res.json({
+      total,
+      promedio: Number(promedio.toFixed(2)),
+      respostas: rows
+    });
+  } catch (err) {
+    console.error('Erro ao ler Postgres:', err);
+    res.status(500).json({ error: 'Error al leer' });
+  }
+});
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log('Servidor rodando na porta ' + PORT));
