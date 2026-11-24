@@ -90,22 +90,22 @@ app.get('/', (req, res) => {
       const horaEscapada = escapeHtml(item.hora);
       return `
         <div class="card">
-            <h3>${tituloEscapado}</h3>
-            <span class="horario">Horário: ${horaEscapada}</span>
+            <h3>\${tituloEscapado}</h3>
+            <span class="horario">Horário: \${horaEscapada}</span>
             <form class="form-avaliacao" data-indice="${i}" data-titulo="${tituloEscapado}">
                 <label>Nota (1 a 5):</label>
                 <div class="estrelas">
-                    <input type="radio" id="n${i}-1" name="nota-${i}" value="1" required><label for="n${i}-1">1</label>
-                    <input type="radio" id="n${i}-2" name="nota-${i}" value="2"><label for="n${i}-2">2</label>
-                    <input type="radio" id="n${i}-3" name="nota-${i}" value="3"><label for="n${i}-3">3</label>
-                    <input type="radio" id="n${i}-4" name="nota-${i}" value="4"><label for="n${i}-4">4</label>
-                    <input type="radio" id="n${i}-5" name="nota-${i}" value="5"><label for="n${i}-5">5</label>
+                    <input type="radio" id="n${i}-1" name="nota-${i}" value="1" required><label for="n\${i}-1">1</label>
+                    <input type="radio" id="n${i}-2" name="nota-${i}" value="2"><label for="n\${i}-2">2</label>
+                    <input type="radio" id="n${i}-3" name="nota-${i}" value="3"><label for="n\${i}-3">3</label>
+                    <input type="radio" id="n${i}-4" name="nota-${i}" value="4"><label for="n\${i}-4">4</label>
+                    <input type="radio" id="n${i}-5" name="nota-${i}" value="5"><label for="n\${i}-5">5</label>
                 </div>
-                <label for="sug-${i}">Sugestões ou Comentários:</label>
-                <textarea id="sug-${i}" placeholder="Comentário opcional..."></textarea>
-                <button type="submit" id="btn-${i}">Enviar Avaliação</button>
+                <label for="sug-\${i}">Sugestões ou Comentários:</label>
+                <textarea id="sug-\${i}" placeholder="Comentário opcional..."></textarea>
+                <button type="submit" id="btn-\${i}">Enviar Avaliação</button>
             </form>
-            <div id="msg-${i}" class="msg"></div>
+            <div id="msg-\${i}" class="msg"></div>
         </div>
       `;
     })
@@ -138,6 +138,7 @@ app.get('/', (req, res) => {
         button:hover { background: #0056b3; }
         button:disabled { background: #6c757d; cursor: not-allowed; }
         .msg { text-align: center; margin-top: 10px; font-weight: bold; font-size: 14px; }
+        .rodape { text-align: center; font-size: 11px; color: #888; margin-top: 8px; }
     </style>
 </head>
 <body>
@@ -145,108 +146,7 @@ app.get('/', (req, res) => {
         <div class="header-card">
             <h1>9º Congresso Amazônico de Iniciação Científica</h1>
             <p>Avaliação das Apresentações e Atividades</p>
-            <div class="data-badge">${escapeHtml(diaAtual.label)}</div>
+            <div class="data-badge">\${escapeHtml(diaAtual.label)}</div>
         </div>
-        <div id="listaApresentacoes">${cardsHtml}</div>
-    </div>
-
-    <script>
-        const diaCurto = ${JSON.stringify(diaAtual.curto)};
-
-        document.querySelectorAll('.form-avaliacao').forEach((form) => {
-            form.addEventListener('submit', async (e) => {
-                e.preventDefault();
-                const i = form.dataset.indice;
-                const titulo = form.dataset.titulo;
-                const notaSelecionada = form.querySelector('input[name="nota-' + i + '"]:checked');
-                const msgDiv = document.getElementById('msg-' + i);
-                const btn = document.getElementById('btn-' + i);
-                const sugEl = document.getElementById('sug-' + i);
-
-                if (!notaSelecionada) return;
-
-                btn.disabled = true;
-                btn.innerText = 'Enviando...';
-
-                const palestra = diaCurto + ' - ' + titulo;
-                const calificacion = Number(notaSelecionada.value);
-                const sugerencia = sugEl ? sugEl.value : '';
-
-                try {
-                    const res = await fetch('/api/respuestas', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ palestra, calificacion, sugerencia })
-                    });
-
-                    if (res.ok) {
-                        msgDiv.style.color = 'green';
-                        msgDiv.innerText = 'Avaliação registrada com sucesso!';
-                        btn.innerText = 'Avaliação Enviada ✓';
-                    } else {
-                        msgDiv.style.color = 'red';
-                        msgDiv.innerText = 'Erro ao enviar. Tente novamente.';
-                        btn.disabled = false;
-                        btn.innerText = 'Enviar Avaliação';
-                    }
-                } catch (err) {
-                    msgDiv.style.color = 'red';
-                    msgDiv.innerText = 'Erro de conexão com o servidor.';
-                    btn.disabled = false;
-                    btn.innerText = 'Enviar Avaliação';
-                }
-            });
-        });
-    </script>
-</body>
-</html>`);
-});
-
-app.post('/api/respuestas', async (req, res) => {
-  const palestra = (req.body.palestra || 'Geral').trim().slice(0, 150);
-  const calificacion = Number(req.body.calificacion);
-  const sugerencia = (req.body.sugerencia || '').trim().slice(0, 1000);
-
-  if (!Number.isInteger(calificacion) || calificacion < 1 || calificacion > 5) {
-    return res.status(400).json({ error: 'Calificación inválida' });
-  }
-
-  try {
-    await pool.query(
-      'INSERT INTO respuestas (palestra, calificacion, sugerencia) VALUES ($1, $2, $3)',
-      [palestra, calificacion, sugerencia]
-    );
-    res.status(201).json({ ok: true });
-  } catch (err) {
-    console.error('Erro Postgres:', err);
-    res.status(500).json({ error: 'No se pudo guardar' });
-  }
-});
-
-app.get('/api/resultados', async (req, res) => {
-  if (req.headers['x-password'] !== process.env.PANEL_PASSWORD) {
-    return res.status(401).json({ error: 'No autorizado' });
-  }
-
-  try {
-    const { rows } = await pool.query(
-      'SELECT palestra, calificacion, sugerencia, creado_en FROM respuestas ORDER BY creado_en DESC'
-    );
-    const total = rows.length;
-    const promedio = total
-      ? rows.reduce((s, r) => s + Number(r.calificacion), 0) / total
-      : 0;
-
-    res.json({
-      total,
-      promedio: Number(promedio.toFixed(2)),
-      respostas: rows
-    });
-  } catch (err) {
-    console.error('Erro ao ler Postgres:', err);
-    res.status(500).json({ error: 'Error al leer' });
-  }
-});
-
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log('Servidor rodando na porta ' + PORT));
+        <div id="listaApresentacoes">\${cardsHtml}</div>
+        <div class="rodape">Versão: v2-
