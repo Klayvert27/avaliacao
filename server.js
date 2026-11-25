@@ -29,9 +29,9 @@ const APRESENTACOES = {
   '10': { diaLabel: 'Quarta-feira, 25/11/2026', curto: 'Qua 25/11', hora: '14h', titulo: 'Cine Juris' },
   '11': { diaLabel: 'Quarta-feira, 25/11/2026', curto: 'Qua 25/11', hora: '14h', titulo: 'Competição de Direitos Humanos' },
   '12': { diaLabel: 'Quarta-feira, 25/11/2026', curto: 'Qua 25/11', hora: '19h', titulo: 'Conferência: Propriedade Intelectual e Sociobiodiversidade' },
-  '13': { diaLabel: 'Quarta-feira, 25/11/2026', curto: 'Qua 25/11', hora: '19h', titulo: 'Cine Fórum: Amazônia em Cena' },
-  '14': { diaLabel: 'Quarta-feira, 25/11/2026', curto: 'Qua 25/11', hora: '19h', titulo: 'Educação, Corpo e Mente' },
-  '15': { diaLabel: 'Quarta-feira, 25/11/2026', curto: 'Qua 25/11', hora: '19h', titulo: 'Ergonomia e Atividade Física' },
+  '13': { diaLabel: 'Quarta-feira, 25/11/2026', curto: 'Qua 25/11', hora: '19h', titulo: 'Roda de Conversa: "Povos Indígenas e Justiça Climática: Do Território Urbano à Incidência Global"' },
+  '14': { diaLabel: 'Quarta-feira, 25/11/2026', curto: 'Qua 25/11', hora: '19h', titulo: 'Seminário: "Regularização Fundiária e Justiça Socioambiental na Amazônia" (UFAM, CNJ, FDD, Clínica Felicidade, TJAM e Ministério da Justiça)' },
+  '15': { diaLabel: 'Quarta-feira, 25/11/2026', curto: 'Qua 25/11', hora: '19h', titulo: 'Tema: "Educação Física no novo Ensino Médio"' },
   '16': { diaLabel: 'Quarta-feira, 25/11/2026', curto: 'Qua 25/11', hora: '19h', titulo: 'Sessão 2: Pôsteres, Comunicações e Mostra de Extensão' },
 
   // DIA 4 — Quinta-feira, 26/11/2026
