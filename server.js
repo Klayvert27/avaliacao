@@ -12,40 +12,41 @@ const pool = new Pool({
 });
 
 const APRESENTACOES = {
-  // DIA 1 — Segunda-feira, 23/11/2026
-  '1': { diaLabel: 'Segunda-feira, 23/11/2026', curto: 'Seg 23/11', hora: '14h', titulo: 'Conferência: Advocacia do Futuro' },
-  '2': { diaLabel: 'Segunda-feira, 23/11/2026', curto: 'Seg 23/11', hora: '14h', titulo: 'Workshop: Lawtechs, Legal Design e Futuro Jurídico' },
-  '3': { diaLabel: 'Segunda-feira, 23/11/2026', curto: 'Seg 23/11', hora: '19h', titulo: 'Solenidade de Abertura e Conferência Magna' },
+  // SEGUNDA-FEIRA, 23/11
+  '1': { diaLabel: 'Segunda-feira, 23/11', curto: 'Seg 23/11', hora: '14h', titulo: 'Conferência: "Advocacia do Futuro: Preservando Saberes, Conectando Dados, Construindo Justiça"' },
+  '2': { diaLabel: 'Segunda-feira, 23/11', curto: 'Seg 23/11', hora: '14h', titulo: 'Workshop: "Lawtechs, Legal Design e o Futuro das Profissões Jurídicas"' },
+  '3': { diaLabel: 'Segunda-feira, 23/11', curto: 'Seg 23/11', hora: '19h', titulo: 'Solenidade de Abertura: "Preservando saberes, conectando dados, construindo soluções"' },
 
-  // DIA 2 — Terça-feira, 24/11/2026
-  '4': { diaLabel: 'Terça-feira, 24/11/2026', curto: 'Ter 24/11', hora: '14h', titulo: 'Painel: Justiça Socioambiental e Povos da Amazônia' },
-  '5': { diaLabel: 'Terça-feira, 24/11/2026', curto: 'Ter 24/11', hora: '19h', titulo: 'Tecnologia e Sustentabilidade nos Negócios Amazônicos' },
-  '6': { diaLabel: 'Terça-feira, 24/11/2026', curto: 'Ter 24/11', hora: '19h', titulo: 'Direitos Humanos, Regulação Tecnológica e Cooperação' },
-  '7': { diaLabel: 'Terça-feira, 24/11/2026', curto: 'Ter 24/11', hora: '19h', titulo: 'Saúde Mental, Comportamento e Qualidade de Vida' },
-  '8': { diaLabel: 'Terça-feira, 24/11/2026', curto: 'Ter 24/11', hora: '19h', titulo: 'Assessorias Esportivas para Corridas de Rua' },
-  '9': { diaLabel: 'Terça-feira, 24/11/2026', curto: 'Ter 24/11', hora: '19h', titulo: 'Sessão 1: Pôsteres e Comunicações Orais' },
+  // TERÇA-FEIRA, 24/11
+  '4': { diaLabel: 'Terça-feira, 24/11', curto: 'Ter 24/11', hora: '14h', titulo: 'Painel/Mesa: "Justiça Socioambiental, Mudanças Climáticas e Tutela Coletiva dos Povos da Amazônia"' },
+  '5': { diaLabel: 'Terça-feira, 24/11', curto: 'Ter 24/11', hora: '19h', titulo: 'Conferência: "Tessituras para o desenvolvimento sustentável: gestão ambiental nos negócios amazônicos"' },
+  '6': { diaLabel: 'Terça-feira, 24/11', curto: 'Ter 24/11', hora: '19h', titulo: 'Tema: "Direitos Humanos, Regulação Tecnológica e Cooperação Internacional na Amazônia"' },
+  '7': { diaLabel: 'Terça-feira, 24/11', curto: 'Ter 24/11', hora: '19h', titulo: 'Tema: "Saúde Mental, Comportamento e Qualidade de Vida no Contexto Contemporâneo"' },
+  '8': { diaLabel: 'Terça-feira, 24/11', curto: 'Ter 24/11', hora: '19h', titulo: 'Tema: "Ergonomia e a atividade física"' },
+  '9': { diaLabel: 'Terça-feira, 24/11', curto: 'Ter 24/11', hora: '19h', titulo: 'Ecochef' },
 
-  // DIA 3 — Quarta-feira, 25/11/2026
-  '10': { diaLabel: 'Quarta-feira, 25/11/2026', curto: 'Qua 25/11', hora: '14h', titulo: 'Cine Juris' },
-  '11': { diaLabel: 'Quarta-feira, 25/11/2026', curto: 'Qua 25/11', hora: '14h', titulo: 'Competição de Direitos Humanos' },
-  '12': { diaLabel: 'Quarta-feira, 25/11/2026', curto: 'Qua 25/11', hora: '19h', titulo: 'Conferência: Propriedade Intelectual e Sociobiodiversidade' },
-  '13': { diaLabel: 'Quarta-feira, 25/11/2026', curto: 'Qua 25/11', hora: '19h', titulo: 'Roda de Conversa: "Povos Indígenas e Justiça Climática: Do Território Urbano à Incidência Global"' },
-  '14': { diaLabel: 'Quarta-feira, 25/11/2026', curto: 'Qua 25/11', hora: '19h', titulo: 'Seminário: "Regularização Fundiária e Justiça Socioambiental na Amazônia" (UFAM, CNJ, FDD, Clínica Felicidade, TJAM e Ministério da Justiça)' },
-  '15': { diaLabel: 'Quarta-feira, 25/11/2026', curto: 'Qua 25/11', hora: '19h', titulo: 'Tema: "Educação Física no novo Ensino Médio"' },
-  '16': { diaLabel: 'Quarta-feira, 25/11/2026', curto: 'Qua 25/11', hora: '19h', titulo: 'Sessão 2: Pôsteres, Comunicações e Mostra de Extensão' },
+  // QUARTA-FEIRA, 25/11
+  '10': { diaLabel: 'Quarta-feira, 25/11', curto: 'Qua 25/11', hora: '14h', titulo: 'Cine Juris: "Versões de um crime"' },
+  '11': { diaLabel: 'Quarta-feira, 25/11', curto: 'Qua 25/11', hora: '14h', titulo: 'Competição de Direitos Humanos' },
+  '12': { diaLabel: 'Quarta-feira, 25/11', curto: 'Qua 25/11', hora: '19h', titulo: 'Mesa-redonda: "Propriedade Intelectual, Saberes Tradicionais e Proteção da Sociobiodiversidade Amazônica"' },
+  '13': { diaLabel: 'Quarta-feira, 25/11', curto: 'Qua 25/11', hora: '19h', titulo: 'Roda de Conversa: "Povos Indígenas e Justiça Climática: Do Território Urbano à Incidência Global"' },
+  '14': { diaLabel: 'Quarta-feira, 25/11', curto: 'Qua 25/11', hora: '19h', titulo: 'Seminário: "Regularização Fundiária e Justiça Socioambiental na Amazônia" (parceiros: UFAM, CNJ, FDD, Clínica Felicidade, TJAM e Ministério da Justiça)' },
+  '15': { diaLabel: 'Quarta-feira, 25/11', curto: 'Qua 25/11', hora: '19h', titulo: 'Tema: "Educação Física no novo Ensino Médio"' },
+  '16': { diaLabel: 'Quarta-feira, 25/11', curto: 'Qua 25/11', hora: '19h', titulo: 'Pôsteres + Comunicações Orais + Projetos Integradores: apresentação de trabalhos' },
+  '26': { diaLabel: 'Quarta-feira, 25/11', curto: 'Qua 25/11', hora: '19h30', titulo: 'Tema: "Saúde Emocional no Ambiente Acadêmico e Profissional"' },
 
-  // DIA 4 — Quinta-feira, 26/11/2026
-  '17': { diaLabel: 'Quinta-feira, 26/11/2026', curto: 'Qui 26/11', hora: '14h / 19h', titulo: 'Júri Simulado / NUJUR' },
-  '18': { diaLabel: 'Quinta-feira, 26/11/2026', curto: 'Qui 26/11', hora: '19h', titulo: 'Competição de Direitos Humanos: UNINORTE x UNILASALLE' },
-  '19': { diaLabel: 'Quinta-feira, 26/11/2026', curto: 'Qui 26/11', hora: '19h', titulo: 'Oficina 1: IA para Pesquisa Acadêmica e Análise de Dados' },
-  '20': { diaLabel: 'Quinta-feira, 26/11/2026', curto: 'Qui 26/11', hora: '19h', titulo: 'Oficina 2: Avaliação Funcional e Tecnologia Vestível' },
-  '21': { diaLabel: 'Quinta-feira, 26/11/2026', curto: 'Qui 26/11', hora: '19h', titulo: 'Oficina 3: Primeiros Socorros Emocionais e Escuta Ativa' },
-  '22': { diaLabel: 'Quinta-feira, 26/11/2026', curto: 'Qui 26/11', hora: '19h', titulo: 'Oficina 4: Simulação de Negociação Internacional (ONU)' },
-  '23': { diaLabel: 'Quinta-feira, 26/11/2026', curto: 'Qui 26/11', hora: '19h', titulo: 'Oficina 5: Hackathon Relâmpago de IA para a Amazônia' },
-  '24': { diaLabel: 'Quinta-feira, 26/11/2026', curto: 'Qui 26/11', hora: '19h', titulo: '40ª Mostra de Iniciação Científica — Sessão 3' },
+  // QUINTA-FEIRA, 26/11
+  '17': { diaLabel: 'Quinta-feira, 26/11', curto: 'Qui 26/11', hora: '14h', titulo: 'Júri Simulado / NUJUR' },
+  '27': { diaLabel: 'Quinta-feira, 26/11', curto: 'Qui 26/11', hora: '19h', titulo: 'Júri Simulado / NUJUR' },
+  '18': { diaLabel: 'Quinta-feira, 26/11', curto: 'Qui 26/11', hora: '19h', titulo: 'Competição de Direitos Humanos (UNINORTE × UNILASALLE)' },
+  '19': { diaLabel: 'Quinta-feira, 26/11', curto: 'Qui 26/11', hora: '19h', titulo: 'Tema: "O fenômeno das Assessorias Esportivas para Corridas de rua"' },
+  '21': { diaLabel: 'Quinta-feira, 26/11', curto: 'Qui 26/11', hora: '19h', titulo: 'Oficina: "Primeiros Socorros Emocionais: Técnicas de Escuta Ativa em Situações de Crise"' },
+  '23': { diaLabel: 'Quinta-feira, 26/11', curto: 'Qui 26/11', hora: '19h', titulo: 'Gincana de Negócios' },
+  '24': { diaLabel: 'Quinta-feira, 26/11', curto: 'Qui 26/11', hora: '19h', titulo: '39ª Mostra de Iniciação Científica — apresentação de trabalhos dos alunos de Metodologia Científica/Pesquisa' },
 
-  // DIA 5 — Sexta-feira, 27/11/2026
-  '25': { diaLabel: 'Sexta-feira, 27/11/2026', curto: 'Sex 27/11', hora: '14h', titulo: 'Apresentação das Extensões (Resultados)' }
+  // SEXTA-FEIRA, 27/11
+  '25': { diaLabel: 'Sexta-feira, 27/11', curto: 'Sex 27/11', hora: '14h', titulo: '1ª Mostra de Extensão' },
+  '28': { diaLabel: 'Sexta-feira, 27/11', curto: 'Sex 27/11', hora: '19h', titulo: 'Gincana Esportiva de Encerramento' }
 };
 
 function escapeHtml(texto = '') {
